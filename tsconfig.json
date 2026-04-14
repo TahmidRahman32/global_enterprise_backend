@@ -8,7 +8,8 @@
       // Environment Settings
       // See also https://aka.ms/tsconfig/module
 
-      "types": [],
+
+      "types": ["node", "express", "multer"],
       // For nodejs:
       // "lib": ["esnext"],
       // "types": ["node"],
