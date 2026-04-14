@@ -7,8 +7,9 @@ import httpStatus from "http-status";
 import { reviewFilterableFields } from "./review.constant";
 import { IJWTPayload } from "../../shared/Types/commonTypes";
 
-export interface CustomRequest extends Request {
+export interface CustomRequest<T = any> extends Request {
    user?: IJWTPayload;
+   body: T;
 }
 
 const createReview = catchAsync(async (req: CustomRequest, res: Response) => {

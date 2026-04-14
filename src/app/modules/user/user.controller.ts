@@ -10,6 +10,7 @@ import pick from "../../helpers/pick";
 // import { IJWTPayload } from "../../shared/types/common";
 import httpStatus from "http-status";
 import { IJWTPayload } from "../../shared/Types/commonTypes";
+import { UploadedFile } from "../../shared/Types/UploadedFile";
 // import { UpdateProfileData } from "../../shared/types/userFileType";
 
 const createUser = catchAsync(async (req: Request, res: Response) => {
@@ -54,10 +55,10 @@ const getMyProfile = catchAsync(async (req: Request & { user?: IJWTPayload }, re
    });
 });
 
-interface AuthenticatedRequest extends Request {
+type AuthenticatedRequest = Request & {
    user?: IJWTPayload;
-   file?: Express.Multer.File;
-}
+   file?: UploadedFile;
+};
 
 const updateMyProfile = catchAsync(async (req: Request & { user?: IJWTPayload }, res: Response) => {
    const user = req.user;
