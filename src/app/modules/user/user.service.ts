@@ -14,6 +14,7 @@ import { Prisma, userRole, userStatus } from "../../../generated/client";
 import { userSearchAbleFields } from "./user.constant";
 import { IJWTPayload } from "../../shared/Types/commonTypes";
 import { fileUploader } from "../../helpers/fileUploader";
+import { UploadedFile } from "../../shared/Types/UploadedFile";
 interface CreateUserData {
    name: string;
    email: string;
@@ -169,7 +170,7 @@ const getMyProfile = async (user: IJWTPayload) => {
    };
 };
 
-const updateMyProfile = async (user: IJWTPayload, req: Request & { file?: Express.Multer.File }) => {
+const updateMyProfile = async (user: IJWTPayload, req: Request & { file?: UploadedFile }) => {
    const userInfo = await prisma.user.findUniqueOrThrow({
       where: {
          email: user?.email,
