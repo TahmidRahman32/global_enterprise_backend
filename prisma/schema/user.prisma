@@ -1,0 +1,33 @@
+model User {
+  id                 String     @id @default(uuid())
+  email              String     @unique
+  name               String
+  profilePhoto       String?
+  password           String?
+  role               userRole   @default(USER)
+  needPasswordChange Boolean    @default(true)
+  status             userStatus @default(ACTIVE)
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+  admin              Admin?
+  massage            Massage[]
+  review             Review[]
+
+  @@map("users")
+}
+
+model Admin {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  profilePhoto String?
+  role         userRole @default(ADMIN)
+  isDeleted    Boolean  @default(false)
+  createAt     DateTime @default(now())
+  updateAt     DateTime @updatedAt
+
+  user    User      @relation(fields: [email], references: [email])
+  massage Massage[]
+
+  @@map("admins")
+}

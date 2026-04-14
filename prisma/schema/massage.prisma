@@ -1,0 +1,17 @@
+model Massage {
+  id          String   @id @default(uuid())
+  name        String
+  email       String?
+  phone       String?
+  description String
+  subject     String  
+  userId      String?  // If User model uses String/UUID
+  adminId     String?  
+  user        User?    @relation(fields: [userId], references: [id])
+  admin       Admin?   @relation(fields: [adminId], references: [id])
+  massageStatus MassageStatus @default(MASSAGE_SEND)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("massages")
+}

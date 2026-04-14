@@ -1,0 +1,19 @@
+enum userRole {
+  USER
+  SUPER_ADMIN
+  ADMIN
+}
+
+enum userStatus {
+  ACTIVE
+  INACTIVE
+  DELETE
+}
+
+enum MassageStatus {
+  MASSAGE_SEND
+  MASSAGE_RECEIVED
+  MASSAGE_READ  
+}
+
+
