@@ -6,7 +6,7 @@ import pick from "../../helpers/pick";
 import httpStatus from "http-status";
 import { reviewFilterableFields } from "./review.constant";
 
-interface CustomRequest extends Request {
+export interface CustomRequest extends Request {
    user?: any;
 }
 
