@@ -5,9 +5,10 @@ import { ReviewService } from "./review.service";
 import pick from "../../helpers/pick";
 import httpStatus from "http-status";
 import { reviewFilterableFields } from "./review.constant";
+import { IJWTPayload } from "../../shared/Types/commonTypes";
 
 export interface CustomRequest extends Request {
-   user?: any;
+   user?: IJWTPayload;
 }
 
 const createReview = catchAsync(async (req: CustomRequest, res: Response) => {

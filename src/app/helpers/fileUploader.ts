@@ -6,10 +6,7 @@ import { v2 as cloudinary } from "cloudinary";
 
 import fs from "fs";
 import config from "../../config";
-
-import { Request } from "express";
-
-type UploadedFile = Express.Multer.File;
+import { UploadedFile } from "../shared/Types/UploadedFile";
 
 const storage = multer.default.diskStorage({
    destination: function (req, file, cb) {
