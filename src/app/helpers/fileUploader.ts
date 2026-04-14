@@ -1,13 +1,13 @@
-import multer from "multer";
+import * as multer from "multer";
+// import type { File } from "multer";
+
 import path from "path";
 import { v2 as cloudinary } from "cloudinary";
 
 import fs from "fs";
 import config from "../../config";
-// import config from "../../config";
- 
 
-const storage = multer.diskStorage({
+const storage = multer.default.diskStorage({
    destination: function (req, file, cb) {
       cb(null, path.join(process.cwd(), "/uploads"));
       // console.log("file", file);
@@ -23,7 +23,7 @@ async function uploadToCloudinary(file: Express.Multer.File) {
       cloud_name: config.cloudinary.cloud_name as string,
       api_key: config.cloudinary.api_key as string,
       api_secret: config.cloudinary.api_secret as string,
-   })
+   });
 
    // Upload an image
    const uploadResult = await cloudinary.uploader
@@ -57,7 +57,7 @@ async function uploadToCloudinary(file: Express.Multer.File) {
    // console.log(autoCropUrl);
 }
 
-const upload = multer({ storage: storage });
+const upload = multer.default({ storage: storage });
 
 export const fileUploader = {
    upload,
