@@ -15,7 +15,7 @@ import { UploadedFile } from "../../shared/Types/UploadedFile";
 
 const createUser = catchAsync(async (req: Request, res: Response) => {
    const { name, email, password, profilePhoto } = req.body;
-   console.log({ name, email, password });
+   // console.log({ name, email, password });
    const result = await userService.createUser({
       name,
       email,

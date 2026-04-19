@@ -27,7 +27,7 @@ const massageCreate = async (user: IJWTPayload, payload: IMassagePayload) => {
    //    throw new Error("Request body is required");
 
    // }
-   console.log(payload.phone, "user phone");
+   // console.log(payload.phone, "user phone");
    const userData = await prisma.user.findUniqueOrThrow({
       where: {
          email: user.email,

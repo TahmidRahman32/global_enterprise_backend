@@ -31,11 +31,11 @@ const login = async (payload: { email: string; password: string }) => {
       throw new ApiError(httpStatus.BAD_REQUEST, "Password is incorrect!");
    }
 
-   const accessToken = jwtHelper.generateToken({ email: user.email, role: user.role }, config.jwt.jwt_secret as Secret, "1h");
+   const accessToken = jwtHelper.generateToken({ email: user.email, role: user.role }, config.jwt.jwt_secret as Secret, config.jwt.expires_in as string);
 
-   const refreshToken = jwtHelper.generateToken({ email: user.email, role: user.role }, config.jwt.refresh_token_secret as Secret, "90d");
+   const refreshToken = jwtHelper.generateToken({ email: user.email, role: user.role }, config.jwt.refresh_token_secret as Secret, config.jwt.refresh_token_expires_in as string);
 
-   console.log(accessToken, refreshToken, "accessToken setUp");
+   // console.log(accessToken, refreshToken, "accessToken setUp");
 
    return {
       accessToken,

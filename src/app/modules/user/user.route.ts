@@ -7,8 +7,8 @@ import { fileUploader } from "../../helpers/fileUploader";
 
 const router = Router();
 
-router.get("/all", useController.getAllUser);
-router.get("/my-profile", auth(userRole.USER), useController.getMyProfile);
+router.get("/all",auth(userRole.ADMIN), useController.getAllUser);
+router.get("/my-profile", auth(userRole.USER,userRole.ADMIN), useController.getMyProfile);
 
 router.post("/create", useController.createUser);
 router.patch("/update-my-profile", auth(userRole.ADMIN, userRole.USER, userRole.SUPER_ADMIN), fileUploader.upload.single("file"), (req: Request, res: Response, next: NextFunction) => {

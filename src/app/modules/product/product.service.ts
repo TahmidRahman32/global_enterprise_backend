@@ -11,7 +11,7 @@ import { IOptions, paginationHelper } from "../../helpers/paginationHelper";
 import { Prisma } from "../../../generated/client";
 
 const createProduct = async (req: Request) => {
-   console.log("Request body structure:", req.body);
+   // console.log("Request body structure:", req.body);
 
    if (req.file) {
       const uploadResult = await fileUploader.uploadToCloudinary(req.file);
