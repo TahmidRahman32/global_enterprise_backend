@@ -10,7 +10,23 @@ import { jwtHelper } from "../helpers/jwtHelper";
 const auth = (...roles: string[]) => {
    return async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
       try {
-         const token = req.cookies?.accessToken || req.headers.authorization?.replace("Bearer ", "") || req.body?.accessToken || req.query?.accessToken;
+         // const token = req.cookies?.accessToken || req.headers.authorization?.replace("Bearer ", "") || req.body?.accessToken || req.query?.accessToken;
+
+         // if (!token) {
+         //    throw new ApiError(httpStatus.UNAUTHORIZED, "No access token provided");
+         // }
+
+         let token: string | undefined;
+
+         // 1. From cookies
+         if (req.cookies?.accessToken) {
+            token = req.cookies.accessToken;
+         }
+
+         // 2. From Authorization header
+         else if (req.headers.authorization?.startsWith("Bearer ")) {
+            token = req.headers.authorization.split(" ")[1];
+         }
 
          if (!token) {
             throw new ApiError(httpStatus.UNAUTHORIZED, "No access token provided");
