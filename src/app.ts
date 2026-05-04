@@ -1,6 +1,7 @@
 import express, { Application, NextFunction, Request, Response } from "express";
 import cors from "cors";
-
+import fs from "fs";
+import path from "path";
 import cookieParser from "cookie-parser";
 import config from "./config";
 import router from "./app/router";
@@ -30,6 +31,13 @@ app.get("/", (req: Request, res: Response) => {
       timeStamp: new Date().toISOString(),
    });
 });
+
+
+const uploadDir = path.join(process.cwd(), "/uploads");
+
+if (!fs.existsSync(uploadDir)) {
+   fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 app.use(globalErrorHandler);
 
