@@ -34,3 +34,12 @@ export const MassageStatus = {
 } as const
 
 export type MassageStatus = (typeof MassageStatus)[keyof typeof MassageStatus]
+
+
+export const OrderStatus = {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]

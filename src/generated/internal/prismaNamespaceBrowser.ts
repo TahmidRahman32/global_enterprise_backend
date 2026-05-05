@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Massage: 'Massage',
+  Order: 'Order',
   Product: 'Product',
   Review: 'Review',
   User: 'User',
@@ -91,6 +92,22 @@ export const MassageScalarFieldEnum = {
 export type MassageScalarFieldEnum = (typeof MassageScalarFieldEnum)[keyof typeof MassageScalarFieldEnum]
 
 
+export const OrderScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  company: 'company',
+  address: 'address',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  status: 'status'
+} as const
+
+export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
+
+
 export const ProductScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -105,7 +122,8 @@ export const ProductScalarFieldEnum = {
   stock: 'stock',
   isActive: 'isActive',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  orderId: 'orderId'
 } as const
 
 export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]

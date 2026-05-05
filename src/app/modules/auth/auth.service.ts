@@ -31,7 +31,7 @@ const login = async (payload: { email: string; password: string }) => {
       throw new ApiError(httpStatus.BAD_REQUEST, "Password is incorrect!");
    }
 
-   const accessToken = jwtHelper.generateToken({ email: user.email, role: user.role }, config.jwt.jwt_secret as Secret, config.jwt.expires_in as string);
+   const accessToken = jwtHelper.generateToken({ email: user.email, role: user.role }, config.jwt.jwt_secret as Secret, config.jwt.access_token_expires_in as string);
 
    const refreshToken = jwtHelper.generateToken({ email: user.email, role: user.role }, config.jwt.refresh_token_secret as Secret, config.jwt.refresh_token_expires_in as string);
 
@@ -65,7 +65,7 @@ const refreshToken = async (token: string) => {
          role: userData.role,
       },
       config.jwt.jwt_secret as Secret,
-      config.jwt.expires_in as string,
+      config.jwt.access_token_expires_in as string,
    );
 
    return {

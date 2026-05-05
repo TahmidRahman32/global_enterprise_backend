@@ -1,0 +1,50 @@
+model Order {
+   id        String      @id @default(uuid())
+   name      String
+   email     String
+   phone     String
+   company   String?
+   address   String
+   userId    String
+   createdAt DateTime    @default(now())
+   updatedAt DateTime    @updatedAt
+   status    OrderStatus @default(PENDING)
+   product   Product[]
+   user      User?       @relation(fields: [userId], references: [id])
+
+   @@map("orders")
+}
+
+// model Order {
+//   id         String      @id @default(uuid())
+//   name       String
+//   email      String
+//   phone      String
+//   company    String?
+//   address    String
+//   userId     String
+//   user       User        @relation(fields: [userId], references: [id])
+//   items      OrderItem[] // 👈 new relation
+//   @@map("orders")
+// }
+
+// model OrderItem {
+//   id        String   @id @default(uuid())
+//   orderId   String
+//   productId String
+//   quantity  Int      @default(1)
+//   price     Float    // snapshot of product price at order time
+//   order     Order    @relation(fields: [orderId], references: [id])
+//   product   Product  @relation(fields: [productId], references: [id])
+//   @@map("order_items")
+// }
+
+// model Product {
+//   id      String      @id @default(uuid())
+//   name    String
+//   price   Float
+//   // ... other fields
+//   orderId String?     // if you still want direct order link, optional now
+//   order   Order?      @relation(fields: [orderId], references: [id])
+//   items   OrderItem[]
+// }

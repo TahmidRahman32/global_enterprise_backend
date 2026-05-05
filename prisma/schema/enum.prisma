@@ -13,7 +13,11 @@ enum userStatus {
 enum MassageStatus {
   MASSAGE_SEND
   MASSAGE_RECEIVED
-  MASSAGE_READ  
+  MASSAGE_READ
 }
 
-
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}

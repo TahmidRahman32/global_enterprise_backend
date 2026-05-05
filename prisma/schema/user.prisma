@@ -7,11 +7,12 @@ model User {
   role               userRole   @default(USER)
   needPasswordChange Boolean    @default(true)
   status             userStatus @default(ACTIVE)
-  createdAt           DateTime   @default(now())
-  updatedAt           DateTime   @updatedAt
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
   admin              Admin?
   massage            Massage[]
   review             Review[]
+  order              Order[]
 
   @@map("users")
 }
