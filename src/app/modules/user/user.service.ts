@@ -112,6 +112,16 @@ const getAllUser = async (params: any, options: IOptions) => {
       orderBy: {
          [sortBy]: sortOrder,
       },
+      select: {
+         id: true,
+         email: true,
+         name: true,
+         profilePhoto: true,
+         role: true,
+         status: true,
+         createdAt: true,
+         updatedAt: true,
+      },
    });
 
    const total = await prisma.user.count({
