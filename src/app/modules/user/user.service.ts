@@ -11,7 +11,7 @@ import { Request } from "express";
 import prisma from "../../../config/db";
 import { IOptions, paginationHelper } from "../../helpers/paginationHelper";
 import { Prisma, userRole, userStatus } from "../../../generated/client";
-import { userSearchAbleFields } from "./user.constant";
+import { IOrderUserPayload, userSearchAbleFields } from "./user.constant";
 import { IJWTPayload } from "../../shared/Types/commonTypes";
 import { fileUploader } from "../../helpers/fileUploader";
 import { UploadedFile } from "../../shared/Types/UploadedFile";
@@ -215,9 +215,44 @@ const updateMyProfile = async (user: IJWTPayload, req: Request & { file?: Upload
    return { ...profileInfo };
 };
 
+
+
+const UpdateUserStatus = async (id: string, payload: IOrderUserPayload) => {
+   try {
+      // 1. Check if order exists
+      const existingOrder = await prisma.user.findUnique({
+         where: { id },
+      });
+
+      if (!existingOrder) {
+         throw new Error(`Order with id ${id} not found`);
+      }
+
+      // 4. Update the order
+      const updatedUserStatus = await prisma.user.update({
+         where: { id },
+         data: {
+            status: payload.status as userStatus,
+         },
+        
+      });
+
+      return updatedUserStatus;
+   } catch (error) {
+      // Handle Prisma errors
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+         if (error.code === "P2025") {
+            throw new Error(`Order with id ${id} not found`);
+         }
+      }
+      throw error; // rethrow other errors
+   }
+};
+
 export const userService = {
    createUser,
    getAllUser,
    getMyProfile,
    updateMyProfile,
+   UpdateUserStatus,
 };

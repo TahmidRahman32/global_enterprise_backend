@@ -72,9 +72,24 @@ const updateMyProfile = catchAsync(async (req: Request & { user?: IJWTPayload },
    });
 });
 
+const UpdateUserStatus = async (req: Request, res: Response) => {
+   const { id } = req.params;
+   const { status } = req.body;
+
+   const result = await userService.UpdateUserStatus(id as string, { status });
+
+   sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "User status updated successfully",
+      data: result,
+   });
+};
+
 export const useController = {
    createUser,
    getAllUser,
    getMyProfile,
    updateMyProfile,
+   UpdateUserStatus,
 };

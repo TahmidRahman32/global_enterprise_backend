@@ -11,6 +11,7 @@ router.get("/all",auth(userRole.ADMIN), useController.getAllUser);
 router.get("/my-profile", auth(userRole.USER,userRole.ADMIN), useController.getMyProfile);
 
 router.post("/create", useController.createUser);
+router.patch("/status/:id", useController.UpdateUserStatus)
 router.patch("/update-my-profile", auth(userRole.ADMIN, userRole.USER, userRole.SUPER_ADMIN), fileUploader.upload.single("file"), (req: Request, res: Response, next: NextFunction) => {
    req.body = JSON.parse(req.body.data);
    return useController.updateMyProfile(req, res, next);
