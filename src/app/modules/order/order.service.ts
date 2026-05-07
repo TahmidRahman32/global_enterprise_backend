@@ -1,11 +1,12 @@
 import { success } from "zod";
 import prisma from "../../../config/db";
-import { OrderStatus, Prisma } from "../../../generated/client";
+import { OrderStatus, Prisma, userRole } from "../../../generated/client";
 import { IJWTPayload } from "../../shared/Types/commonTypes";
 import { IPaginationOptions } from "../../shared/Types/Ipagination";
 import { paginationHelper } from "../../helpers/paginationHelper";
 import { massageSearchAbleFields, orderSearchAbleFields } from "../massage/massage.constant";
 import { IOrderFromUpdatePayload, IOrderPayload, IOrderUpdatePayload } from "./order.constant";
+import { IAuthUser } from "../../interfaces/common";
 
 const OrderCreate = async (user: IJWTPayload, payload: IOrderPayload) => {
    try {
@@ -130,7 +131,9 @@ const getAllOrders = async (params: any, options: IPaginationOptions) => {
          phone: true,
          status: true,
          createdAt: true,
+         company: true,
          updatedAt: true,
+         address: true,
          user: true,
          product: true,
       },
@@ -186,23 +189,19 @@ const UpdateOrderStatus = async (id: string, payload: IOrderUpdatePayload) => {
          data: {
             status: payload.status as OrderStatus,
          },
-         include: {
-            product: true, // include related products if needed
-            user: {
-               select: { id: true, email: true, name: true },
-            },
+         select: {
+            status: true,
          },
       });
 
       return updatedOrder;
    } catch (error) {
-      // Handle Prisma errors
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
          if (error.code === "P2025") {
             throw new Error(`Order with id ${id} not found`);
          }
       }
-      throw error; // rethrow other errors
+      throw error; 
    }
 };
 
@@ -256,12 +255,76 @@ const UpdateOrderFrom = async (id: string, payload: IOrderFromUpdatePayload) => 
    }
 };
 
+ 
+
+const getMyOrders = async (user: IAuthUser, filters: any, options: IPaginationOptions) => {
+   const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
+   const { ...filterData } = filters;
+
+   const andConditions: Prisma.OrderWhereInput[] = [];
+
+
+   if (user?.role === userRole.USER) {
+      andConditions.push({
+         userId: user.email, 
+      });
+   } else if (user?.role === userRole.ADMIN) {
+  
+   }
+   if (Object.keys(filterData).length > 0) {
+      for (const [key, value] of Object.entries(filterData)) {
+         andConditions.push({
+            [key]: { equals: value },
+         });
+      }
+   }
+
+   const whereConditions: Prisma.OrderWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+
+   const result = await prisma.order.findMany({
+      where: whereConditions,
+      skip,
+      take: limit,
+      orderBy: {
+         [sortBy]: sortOrder,
+      },
+      include: {
+         user: {
+            select: {
+               name: true,
+               email: true,
+            },
+         },
+         product: {
+            select: {
+               name: true,
+               picture: true,
+            },
+         },
+      },
+   });
+
+   const total = await prisma.order.count({
+      where: whereConditions,
+   });
+
+   return {
+      meta: {
+         total,
+         limit,
+         page,
+      },
+      data: result,
+   };
+};
+
 export const orderService = {
    OrderCreate,
    DeleteOrder,
    getAllOrders,
    UpdateOrderStatus,
    UpdateOrderFrom,
+   getMyOrders,
 };
 
 // one order but many products

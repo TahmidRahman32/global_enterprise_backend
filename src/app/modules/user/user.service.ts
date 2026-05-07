@@ -225,7 +225,7 @@ const UpdateUserStatus = async (id: string, payload: IOrderUserPayload) => {
       });
 
       if (!existingOrder) {
-         throw new Error(`Order with id ${id} not found`);
+         throw new Error(`User with id ${id} not found`);
       }
 
       // 4. Update the order

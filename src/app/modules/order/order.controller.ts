@@ -7,6 +7,7 @@ import pick from "../../helpers/pick";
 import { orderSearchAbleFields } from "../massage/massage.constant";
 
 import httpStatus from "http-status";
+import { IAuthUser } from "../../interfaces/common";
 
 const OrderCreate = catchAsync(async (req: Request & { user?: IJWTPayload }, res: Response) => {
    // console.log("data", req.body, "user", req.user);
@@ -33,6 +34,21 @@ const getAllOrders = catchAsync(async (req: Request, res: Response) => {
       message: "Get all Order data fetched!",
       meta: result.meta,
       data: result.data,
+   });
+});
+const getMyOrders = catchAsync(async (req: Request & { user?: IAuthUser }, res: Response) => {
+   const user = req.user;
+   const filters = pick(req.query, ["status", "paymentStatus"]);
+   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+
+   const result = await orderService.getMyOrders(user as IAuthUser, filters, options);
+
+   sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "My Appointment retrive successfully",
+      data: result.data,
+      meta: result.meta,
    });
 });
 
@@ -81,4 +97,5 @@ export const orderController = {
    getAllOrders,
    updateOrderStatus,
    UpdateOrderFrom,
+   getMyOrders,
 };
