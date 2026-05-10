@@ -4,7 +4,7 @@ import { OrderStatus, Prisma, userRole } from "../../../generated/client";
 import { IJWTPayload } from "../../shared/Types/commonTypes";
 import { IPaginationOptions } from "../../shared/Types/Ipagination";
 import { paginationHelper } from "../../helpers/paginationHelper";
-import { massageSearchAbleFields, orderSearchAbleFields } from "../massage/massage.constant";
+import { orderSearchAbleFields } from "../massage/massage.constant";
 import { IOrderFromUpdatePayload, IOrderPayload, IOrderUpdatePayload } from "./order.constant";
 import { IAuthUser } from "../../interfaces/common";
 
@@ -257,63 +257,103 @@ const UpdateOrderFrom = async (id: string, payload: IOrderFromUpdatePayload) => 
 
  
 
-const getMyOrders = async (user: IAuthUser, filters: any, options: IPaginationOptions) => {
-   const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
-   const { ...filterData } = filters;
+// const getMyOrders = async (user: IAuthUser, filters: any, options: IPaginationOptions) => {
+//    const { page, limit, skip, sortBy, sortOrder } = paginationHelper.OrderCalculatePagination(options);
+//    const { ...filterData } = filters;
 
-   const andConditions: Prisma.OrderWhereInput[] = [];
+//    const andConditions: Prisma.OrderWhereInput[] = [];
 
 
-   if (user?.role === userRole.USER) {
-      andConditions.push({
-         userId: user.email, 
-      });
-   } else if (user?.role === userRole.ADMIN) {
+//    if (user?.role === userRole.USER) {
+//       andConditions.push({
+//          userId: user.id, 
+//       });
+//    } else if (user?.role === userRole.ADMIN) {
   
-   }
-   if (Object.keys(filterData).length > 0) {
-      for (const [key, value] of Object.entries(filterData)) {
-         andConditions.push({
-            [key]: { equals: value },
-         });
-      }
+//    }
+//    if (Object.keys(filterData).length > 0) {
+//       for (const [key, value] of Object.entries(filterData)) {
+//          andConditions.push({
+//             [key]: { equals: value },
+//          });
+//       }
+//    }
+
+//    const whereConditions: Prisma.OrderWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+
+//    const result = await prisma.order.findMany({
+//       where: whereConditions,
+//       skip,
+//       take: limit,
+//       orderBy: {
+//          [sortBy]: sortOrder,
+//       },
+//       include: {
+//          user: {
+//             select: {
+//                name: true,
+//                email: true,
+//             },
+//          },
+//          product: {
+//             select: {
+//                name: true,
+//                picture: true,
+//             },
+//          },
+//       },
+//    });
+
+//    const total = await prisma.order.count({
+//       where: whereConditions,
+//    });
+
+//    return {
+//       meta: {
+//          total,
+//          limit,
+//          page,
+//       },
+//       data: result,
+//    };
+// };
+const getMyOrders = async (user: IAuthUser, filters: any, options: IPaginationOptions) => {
+   const { page, limit, skip, sortBy, sortOrder } = paginationHelper.OrderCalculatePagination(options);
+   const { status, searchTerm } = filters;
+
+   const andConditions: Prisma.OrderWhereInput[] = [
+      { userId: user.id }, 
+   ];
+
+   if (status) {
+      andConditions.push({ status: { equals: status } });
    }
 
-   const whereConditions: Prisma.OrderWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+   if (searchTerm) {
+      andConditions.push({
+         OR: [
+            { product: { some: { name: { contains: searchTerm, mode: "insensitive" } } } }, 
+         ],
+      });
+   }
+
+   const whereConditions: Prisma.OrderWhereInput = { AND: andConditions };
 
    const result = await prisma.order.findMany({
       where: whereConditions,
       skip,
       take: limit,
-      orderBy: {
-         [sortBy]: sortOrder,
-      },
+      orderBy: { [sortBy]: sortOrder },
       include: {
-         user: {
-            select: {
-               name: true,
-               email: true,
-            },
-         },
-         product: {
-            select: {
-               name: true,
-               picture: true,
-            },
-         },
+         user: { select: { name: true, email: true } },
+         product: { select: { name: true, picture: true } },
       },
    });
 
-   const total = await prisma.order.count({
-      where: whereConditions,
-   });
+   const total = await prisma.order.count({ where: whereConditions });
 
    return {
-      meta: {
-         total,
-         limit,
-         page,
-      },
+      meta: { total, limit, page },
       data: result,
    };
 };

@@ -14,4 +14,4 @@ model Massage {
   updatedAt   DateTime @updatedAt
 
   @@map("massages")
-}
+} 

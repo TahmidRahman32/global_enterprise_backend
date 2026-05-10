@@ -38,7 +38,7 @@ const getAllOrders = catchAsync(async (req: Request, res: Response) => {
 });
 const getMyOrders = catchAsync(async (req: Request & { user?: IAuthUser }, res: Response) => {
    const user = req.user;
-   const filters = pick(req.query, ["status", "paymentStatus"]);
+   const filters = pick(req.query, ["status"]);
    const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
 
    const result = await orderService.getMyOrders(user as IAuthUser, filters, options);
@@ -46,7 +46,7 @@ const getMyOrders = catchAsync(async (req: Request & { user?: IAuthUser }, res: 
    sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: "My Appointment retrive successfully",
+      message: "My order fetched successfully!!",
       data: result.data,
       meta: result.meta,
    });
