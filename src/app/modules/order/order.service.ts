@@ -322,8 +322,9 @@ const getMyOrders = async (user: IAuthUser, filters: any, options: IPaginationOp
    const { status, searchTerm } = filters;
 
    const andConditions: Prisma.OrderWhereInput[] = [
-      { userId: user.id }, 
+      { email: user.email }, 
    ];
+   console.log(andConditions)
 
    if (status) {
       andConditions.push({ status: { equals: status } });
