@@ -149,6 +149,7 @@ const getMyProfile = async (user: IJWTPayload) => {
          needPasswordChange: true,
          role: true,
          status: true,
+         profilePhoto: true,
       },
    });
 
@@ -180,6 +181,41 @@ const getMyProfile = async (user: IJWTPayload) => {
    };
 };
 
+// const updateMyProfile = async (user: IJWTPayload, req: Request & { file?: UploadedFile }) => {
+//    const userInfo = await prisma.user.findUniqueOrThrow({
+//       where: {
+//          email: user?.email,
+//          status: userStatus.ACTIVE,
+//       },
+//    });
+
+//    const file = req.file;
+//    if (file) {
+//       const uploadToCloudinary = await fileUploader.uploadToCloudinary(file);
+//       req.body.profilePhoto = uploadToCloudinary?.secure_url;
+//    }
+
+//    let profileInfo;
+
+//    if (userInfo.role === userRole.ADMIN) {
+//       profileInfo = await prisma.admin.update({
+//          where: {
+//             email: userInfo.email,
+//          },
+//          data: req.body,
+//       });
+//    } else if (userInfo.role === userRole.USER) {
+//       profileInfo = await prisma.user.update({
+//          where: {
+//             email: userInfo.email,
+//          },
+//          data: req.body,
+//       });
+//    }
+
+//    return { ...profileInfo };
+// };
+
 const updateMyProfile = async (user: IJWTPayload, req: Request & { file?: UploadedFile }) => {
    const userInfo = await prisma.user.findUniqueOrThrow({
       where: {
@@ -197,25 +233,27 @@ const updateMyProfile = async (user: IJWTPayload, req: Request & { file?: Upload
    let profileInfo;
 
    if (userInfo.role === userRole.ADMIN) {
+      const { name, profilePhoto } = req.body;
       profileInfo = await prisma.admin.update({
-         where: {
-            email: userInfo.email,
+         where: { email: userInfo.email },
+         data: {
+            ...(name && { name }),
+            ...(profilePhoto && { profilePhoto }),
          },
-         data: req.body,
       });
    } else if (userInfo.role === userRole.USER) {
+      const { name, profilePhoto } = req.body;
       profileInfo = await prisma.user.update({
-         where: {
-            email: userInfo.email,
+         where: { email: userInfo.email },
+         data: {
+            ...(name && { name }),
+            ...(profilePhoto && { profilePhoto }),
          },
-         data: req.body,
       });
    }
 
    return { ...profileInfo };
 };
-
-
 
 const UpdateUserStatus = async (id: string, payload: IOrderUserPayload) => {
    try {
@@ -234,7 +272,6 @@ const UpdateUserStatus = async (id: string, payload: IOrderUserPayload) => {
          data: {
             status: payload.status as userStatus,
          },
-        
       });
 
       return updatedUserStatus;

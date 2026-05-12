@@ -38,7 +38,7 @@ const getAllOrders = catchAsync(async (req: Request, res: Response) => {
 });
 const getMyOrders = catchAsync(async (req: Request & { user?: IAuthUser }, res: Response) => {
    const user = req.user;
-   const filters = pick(req.query, ["status"]);
+   const filters = pick(req.query, ["status", "searchTerm"]);
    const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
 
    const result = await orderService.getMyOrders(user as IAuthUser, filters, options);

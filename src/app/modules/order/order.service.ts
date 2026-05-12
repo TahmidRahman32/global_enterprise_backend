@@ -346,7 +346,7 @@ const getMyOrders = async (user: IAuthUser, filters: any, options: IPaginationOp
       orderBy: { [sortBy]: sortOrder },
       include: {
          user: { select: { name: true, email: true } },
-         product: { select: { name: true, picture: true } },
+         product: { select: { name: true, picture: true } },         
       },
    });
 
