@@ -178,7 +178,7 @@ const getMe = async (session: any) => {
       },
    });
 
-   const { id, email, role, needPasswordChange, status } = userData;
+   const { id, email, role, needPasswordChange, status, profilePhoto } = userData;
 
    return {
       id,
@@ -186,6 +186,7 @@ const getMe = async (session: any) => {
       role,
       needPasswordChange,
       status,
+      profilePhoto,
    };
 };
 
