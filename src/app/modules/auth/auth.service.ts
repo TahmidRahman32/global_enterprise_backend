@@ -178,10 +178,11 @@ const getMe = async (session: any) => {
       },
    });
 
-   const { id, email, role, needPasswordChange, status, profilePhoto } = userData;
+   const { id, name, email, role, needPasswordChange, status, profilePhoto } = userData;
 
    return {
       id,
+      name,
       email,
       role,
       needPasswordChange,

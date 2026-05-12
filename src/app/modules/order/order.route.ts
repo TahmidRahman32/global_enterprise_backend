@@ -6,7 +6,7 @@ import { userRole } from "../../../generated/enums";
 const router = Router();
 
 router.get("/all", orderController.getAllOrders);
-router.get("/my-order", auth(userRole.ADMIN, userRole.USER),orderController.getMyOrders)
+router.get("/my-orders", auth( userRole.USER),orderController.getMyOrders)
 // router.get("/:id", MassageController.getMassageById);
 router.patch("/:id", auth(userRole.ADMIN), orderController.updateOrderStatus);
 router.patch("/from/:id", auth(userRole.USER), orderController.UpdateOrderFrom);
