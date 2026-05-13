@@ -13,7 +13,8 @@ import { userRole } from "../../../generated/enums";
 
 const router = express.Router();
 
-router.get("/all", MassageController.getAllMassages);
+router.get("/all", auth(userRole.ADMIN), MassageController.getAllMassages);
+router.get("/my-messages",auth(userRole.USER),MassageController.getMyMessage)
 router.get("/:id", MassageController.getMassageById);
 
 router.post("/create", auth(userRole.USER, userRole.ADMIN), MassageController.createMassage);

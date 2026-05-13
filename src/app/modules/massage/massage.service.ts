@@ -12,6 +12,7 @@ import { paginationHelper } from "../../helpers/paginationHelper";
 import { Prisma } from "../../../generated/client";
 import { IPaginationOptions } from "../../shared/Types/Ipagination";
 import { massageSearchAbleFields } from "./massage.constant";
+import { IAuthUser } from "../../interfaces/common";
 
 interface IMassagePayload {
    name: string;
@@ -104,8 +105,25 @@ const getAllMassages = async (params: any, options: IPaginationOptions) => {
          description: true,
          createdAt: true,
          updatedAt: true,
-         user: true,
-         admin: true,
+         user: {
+            select: {
+               createdAt: true,
+               email: true,
+               id: true,
+               name: true,
+               profilePhoto: true,
+               role: true,
+               status: true,
+               updatedAt: true,
+            },
+         },
+         admin: {
+            select:{
+               name: true,
+               email: true,
+               id:true,
+            }
+         },
       },
    });
 
@@ -129,8 +147,41 @@ const getMassageById = async (id: string) => {
    return result;
 };
 
+const getMyMassages = async (user: IAuthUser, filters: any, options: IPaginationOptions) => {
+   const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
+   const { searchTerm } = filters;
+
+   const andConditions: Prisma.MassageWhereInput[] = [{ email: user.email }];
+
+   if (searchTerm) {
+      andConditions.push({
+         OR: [{ user: { email: { contains: searchTerm, mode: "insensitive" } } }],
+      });
+   }
+
+   const whereConditions: Prisma.MassageWhereInput = { AND: andConditions };
+
+   const result = await prisma.massage.findMany({
+      where: whereConditions,
+      skip,
+      take: limit,
+      orderBy: { [sortBy]: sortOrder },
+      include: {
+         user: { select: { name: true, email: true } },
+      },
+   });
+
+   const total = await prisma.massage.count({ where: whereConditions });
+
+   return {
+      meta: { total, limit, page },
+      data: result,
+   };
+};
+
 export const massageService = {
    massageCreate,
    getAllMassages,
    getMassageById,
+   getMyMassages,
 };

@@ -6,6 +6,7 @@ import httpStatus from "http-status";
 import { IJWTPayload } from "../../shared/Types/commonTypes";
 import pick from "../../helpers/pick";
 import { massageFilterableFields } from "./massage.constant";
+import { IAuthUser } from "../../interfaces/common";
 // import { userFilterableFields } from "./massage.constant";
 
 const createMassage = catchAsync(async (req: Request & { user?: IJWTPayload }, res: Response) => {
@@ -35,6 +36,21 @@ const getAllMassages = catchAsync(async (req: Request, res: Response) => {
       data: result.data,
    });
 });
+const getMyMessage = catchAsync(async (req: Request & { user?: IAuthUser }, res: Response) => {
+   const user = req.user;
+   const filters = pick(req.query, ["status", "searchTerm"]);
+   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+
+   const result = await massageService.getMyMassages(user as IAuthUser, filters, options);
+
+   sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "My Massage fetched successfully!!",
+      data: result.data,
+      meta: result.meta,
+   });
+});
 
 const getMassageById = catchAsync(async (req: Request, res: Response) => {
    const { id } = req.params;
@@ -51,4 +67,5 @@ export const MassageController = {
    createMassage,
    getAllMassages,
    getMassageById,
+   getMyMessage,
 };
