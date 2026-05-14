@@ -12,7 +12,7 @@ import notFound from "./app/middlewares/notFound";
 const app: Application = express();
 app.use(
    cors({
-      origin: ["http://localhost:3000"],
+      origin: ["http://localhost:3000", "https://global-enterprise-frontend.vercel.app"],
       credentials: true,
    }),
 );
